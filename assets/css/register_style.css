@@ -1,0 +1,127 @@
+
+@font-face {
+    font-family: 'Bellota-LI';
+    src: url("../fonts/Bellota-LightItalic.otf");
+}
+
+@font-face {
+    font-family: 'Bellota-BI';
+    src: url("../fonts/Bellota-BoldItalic.otf");
+}
+/* constants */
+a{
+    text-decoration: none;
+    color: #3498db;
+}
+
+a:hover{
+    text-shadow: 1px 1px 10px black;
+}
+
+form{
+    text-align: center;
+}
+
+html, body{
+    height: 100%;
+    min-height: 100%;
+}
+
+body{
+    margin: 0;
+    padding: 0;
+}
+
+.wrapper{
+    background-image: url("../images/backgrounds/desktop.jpg");
+    background-size: 100%;
+    width: 100%;
+    height: 100%;
+}
+
+.login_box{
+    font-family: 'Bellota-LI', sans-serif;
+    position: relative;
+    margin-right: auto;
+    margin-left: auto;
+    top: 7%;
+    width: 40%; /* here is the reposive part to do later*/
+    background-color: white;
+    border: 1px solid #ededed;
+    border-radius: 7px;
+    padding: 5px;
+    opacity: .9;
+    box-shadow: 5px 5px 5px gray;
+}
+
+/* header text login or register*/
+.login_header{
+    font-family: 'Bellota-LI', sans-serif;
+    width: 100%;
+    height: 90px;
+    background-color: #3498db;
+    color: white;
+    text-align: center;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    box-shadow: 5px 5px 5px #024369;
+    margin-bottom: 20px;
+}
+
+.login_header h1{
+    font-family: 'Bellota-BI', sans-serif;
+    margin-top: 0;
+    margin-bottom: 0;
+    color: #137686;
+    text-shadow: #423636 1px 1px 1px;
+    font-size: 250%;
+}
+
+/* style buttons and fields */
+/*buttons first */
+input[type="submit"]{
+    background-color: #3498db;
+    border: 1px solid #3498db;
+    border-radius: 5px;
+    margin: 5px 0 10px 0;
+    padding: 5px 10px 5px 10px;
+    color: #2C6C96;
+    text-shadow: #73B6E2 .5px .5px .5px;
+    font-family: "Bellota-BI", sans-serif;
+    font-size: 100%;
+    transition: box-shadow .5s, color 1s;
+}
+input[type="submit"]:hover{
+    box-shadow: 10px 10px 10px gray;
+    color: white;
+}
+/* Fields style */
+input[type="text"], input[type="email"], input[type="password"]{
+    border: 1px solid #e5e5e5;
+    padding: 1px 5px 1px 5px;
+    border-radius: 5px;
+    margin-top: 5px;
+    width: 70%;
+    height: 50px;
+    font-size: 18px;
+    margin-bottom: 10px;
+    /*padding-right: 10px;*/
+    transition: box-shadow .5s;
+}
+
+input[type="text"]:hover, input[type="email"]:hover, input[type="password"]:hover{
+    border-color: #3498db;
+    box-shadow: 10px 10px 10px #3498db;
+}
+
+/* hide register form */
+#second{
+    display: none;
+}
+
+/* responsive */
+@media (max-width: 1300px) {
+    .login_box{
+        width: 70%;
+    }
+}

@@ -82,7 +82,7 @@ if (isset($_SESSION['username'])){
     if($num_rows > 0){
         echo "
             <form action='like.php?post_id=$post_id' method='post'>
-                <input type='submit' class='comment_like' name='unlike_button' value='Unlike' style='color: red;'>
+                <input type='submit' class='comment_like unlike' name='unlike_button' value='Unlike'>
                 <div class='like_value'>
                     $total_likes Likes
                 </div>

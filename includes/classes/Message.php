@@ -206,10 +206,12 @@ class Message{
 
             $set_viewed_query = mysqli_query($this->con, "UPDATE messages SET viewed='yes' WHERE user_to='$userLoggedIn' AND user_from='$username'");
             $is_unread_query = mysqli_query($this->con, "SELECT opened FROM messages WHERE user_to='$userLoggedIn' AND user_from='$username' ORDER BY date DESC");
+            $style = "";
             if (mysqli_num_rows($is_unread_query) > 0){
                 $new_row = mysqli_fetch_array($is_unread_query);
                 $style = ($new_row['opened'] == 'no') ? "background-color: #DDEDFF;" : "";
             }
+
 
             $user_found_obj = new User($this->con, $username);
             $latest_message_details = $this->getLatestMessage($userLoggedIn, $username);

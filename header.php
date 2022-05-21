@@ -5,6 +5,7 @@ include("includes/classes/Post.php");
 include("includes/classes/Message.php");
 include("includes/classes/Notification.php");
 
+
 if (isset($_SESSION['username'])){
     $userLoggedIn = $_SESSION['username'];
     $user_details_query = mysqli_query($con, "SELECT * FROM users WHERE username='$userLoggedIn'");
@@ -36,6 +37,7 @@ if (isset($_SESSION['username'])){
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/jquery.Jcrop.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
 
 </head>
 <body>
@@ -45,7 +47,25 @@ if (isset($_SESSION['username'])){
             <a href="index.php">ZyChat</a>
         </div>
 
-        <nav>
+        <div class="search">
+            <form action="search.php" method="get" name="search_form" id="search_form_submit">
+                <input type="text" onkeyup="getLiveSearchUsers(this.value, '<?php echo $userLoggedIn;?>')" name="q" placeholder="Search..." autocomplete="off" id="search_text_input">
+
+                <div class="button_holder">
+                    <img src="assets/images/icons/magnifying_glass.png" alt="">
+                </div>
+            </form>
+
+            <div class="search_result">
+
+            </div>
+
+            <div class="search_result_footer_empty">
+
+            </div>
+        </div>
+
+        <nav class="menu_show">
             <?php
             // un read messages
             $messages = new Message($con, $userLoggedIn);
@@ -54,6 +74,10 @@ if (isset($_SESSION['username'])){
             // un read notifications
             $notify = new Notification($con, $userLoggedIn);
             $num_notify = $notify->getUnreadNumber();
+
+            // unread requests
+            $user_obj = new User($con, $userLoggedIn);
+            $num_request = $user_obj->getNumberOfFriendsRequests();
             ?>
             <a href="<?php echo $userLoggedIn; ?>">
                 <?php echo $user['first_name']; ?>
@@ -69,7 +93,7 @@ if (isset($_SESSION['username'])){
                 }
                 ?>
             </a>
-            <a href="javascript:void(0)" onclick="getDropdownData('<?php echo $userLoggedIn;?>', 'notification')">
+            <a href="javascript:void(0)" onclick="getDropdownData('<?php echo $userLoggedIn;?>', 'notifications')">
                 <i class="fa fa-bell fa-lg"></i>
                 <?php
                 if ($num_notify > 0){
@@ -79,8 +103,13 @@ if (isset($_SESSION['username'])){
             </a>
             <a href="requests.php">
                 <i class="fa fa-users fa-lg"></i>
+                <?php
+                if ($num_request > 0){
+                    echo '<span class="notification_badge" id="unread_requesets">'.$num_request.'</span>';
+                }
+                ?>
             </a>
-            <a href="#">
+            <a href="settings.php">
                 <i class="fa fa-cog fa-lg"></i>
             </a>
             <a href="includes/handlers/logout.php">
@@ -90,6 +119,14 @@ if (isset($_SESSION['username'])){
 
 
         </nav>
+
+        <!-- Menu -->
+        <div class="menu" onclick="showHideMenu()">
+            <div class="line line-1"></div>
+            <div class="line line-2"></div>
+            <div class="line line-3"></div>
+        </div>
+        <!-- End of Menu -->
 
         <div class="dropdwon_data_window" style="height: 0px;
             font-family: 'Bellota-LI', sans-serif;
@@ -106,25 +143,20 @@ if (isset($_SESSION['username'])){
 
     </div>
 
-    <style>
-        .notification_badge{
-            padding: 4px;
-            font-size: 12px;
-            font-weight: 700;
-            line-height: 1;
-            color: white;
-            text-align: center;
-            white-space: nowrap;
-            vertical-align: baseline;
-            background-color: #f00;
-            position: absolute;
-            left: 8px;
-            top: -5px;
-            border-radius: 50%;
-        }
-    </style>
+
 
     <script>
+        var b = true;
+        function showHideMenu(){
+            if (b){
+                $('.menu_show').css({'display': 'flex', 'flex-direction':'column'});
+                b=false;
+            }else{
+                $('.menu_show').css({'display': 'none'});
+                b=true;
+            }
+        }
+
         var userLoggedIn = '<?php echo $userLoggedIn;?>';
 
         $(document).ready(function (){
@@ -140,9 +172,9 @@ if (isset($_SESSION['username'])){
                     var pageName; // holds name of page to send ajax request to
                     var type = $('#dropdown_data_type').val();
 
-                    if (type == 'notification')
+                    if (type === 'notifications')
                         pageName = "ajax_load_notifications.php";
-                    else if(type == 'message')
+                    else if(type === 'message')
                         pageName = "ajax_load_messages.php";
 
                     var ajaxReq = $.ajax({

@@ -6,6 +6,7 @@ $imgSrc = "";
 $result_path = "";
 $msg = "";
 
+
 /***********************************************************
 0 - Remove The Temp image if it exists
  ***********************************************************/
@@ -72,7 +73,7 @@ if(isset($_FILES['image']['name'])){
     imagecopyresampled($main,$src2,0, 0, 0, 0,$main_width,$main_height,$original_width,$original_height);
     //upload new version
     $main_temp = $fullpath_2;
-    imagejpeg($main, $main_temp, 90);
+    imagejpeg($main, $main_temp, 100);
     chmod($main_temp,0777);
     //free up memory
     imagedestroy($src2);
@@ -150,9 +151,8 @@ if (isset($_POST['x'])){
 
 }// post x
 ?>
-<div id="Overlay" style=" width:100%; height:100%; border:0px #990000 solid;
-                        position:absolute; top:0px; left:0px; z-index:2000; display:none;"></div>
-<div class="main_column column">
+
+<div class="column title settings">
 
 
     <div id="formExample">
@@ -160,28 +160,36 @@ if (isset($_POST['x'])){
         <p><b> <?=$msg?> </b></p>
 
         <form action="upload.php" method="post"  enctype="multipart/form-data">
-            Upload something<br /><br />
-            <input type="file" id="image" name="image" style="width:200px; height:30px; " /><br /><br />
-            <input type="submit" value="Submit" style="width:85px; height:25px;" />
+            <h4 class="settings_title">Upload Image</h4><br /><br />
+            <img id="profile_image_curr" alt="" class="small_profile_pics"
+                 src="<?=$user['profile_pic']?>" style="width: 500px;">
+
+            <input type="file" class="settings_btn" id="image" name="image"/><br /><br />
+            <input type="submit" class="settings_btn" value="Upload" />
         </form><br /><br />
 
     </div> <!-- Form-->
+
+    <div id="Overlay" style=" width:100%; height:100%; border:0px #990000 solid;
+                        position:absolute; top:0px; left:0px; z-index:2000; display:none;">
+
+    </div>
 
 
     <?php
     if($imgSrc){ //if an image has been uploaded display cropping area?>
         <script>
-            $('#Overlay').show();
+            // $('#Overlay').show();
             $('#formExample').hide();
         </script>
         <div id="CroppingContainer"
-             style="width:800px; max-height:600px; background-color:#FFF; margin-left: -200px; position:relative; overflow:hidden; border:2px #666 solid; z-index:2001; padding-bottom:0px;">
+             >
 
-            <div id="CroppingArea" style="width:500px; max-height:400px; position:relative; overflow:hidden; margin:40px 0px 40px 40px; border:2px #666 solid; float:left;">
-                <img src="<?=$imgSrc?>" border="0" id="jcrop_target" style="border:0px #990000 solid; position:relative; margin:0px 0px 0px 0px; padding:0px; " />
+            <div id="CroppingArea" style=" display: flex;justify-content: center;overflow:hidden; margin:40px 0px 40px 40px; border:none; box-shadow: 0 5px 10px gray;border-radius: 10px;">
+                <img src="<?=$imgSrc?>" border="0" id="jcrop_target" style="width:500px; border:0px #990000 solid; position:relative; margin:0px 0px 0px 0px; padding:0px; " />
             </div>
 
-            <div id="InfoArea" style="width:180px; height:150px; position:relative; overflow:hidden; margin:40px 0px 0px 40px; border:0px #666 solid; float:left;">
+            <div id="InfoArea" style=" overflow:hidden; margin:40px 0px 0px 40px; border:0px #666 solid;">
                 <p style="margin:0px; padding:0px; color:#444; font-size:18px;">
                     <b>Crop Profile Image</b><br /><br />
                     <span style="font-size:14px;">
@@ -194,7 +202,7 @@ if (isset($_POST['x'])){
 
             <br />
 
-            <div id="CropImageForm" style="width:100px; height:30px; float:left; margin:10px 0px 0px 40px;" >
+            <div id="CropImageForm" style="margin:10px 0px 0px 40px;" >
                 <form action="upload.php" method="post" onsubmit="return checkCoords();">
                     <input type="hidden" id="x" name="x" />
                     <input type="hidden" id="y" name="y" />
@@ -202,13 +210,13 @@ if (isset($_POST['x'])){
                     <input type="hidden" id="h" name="h" />
                     <input type="hidden" value="jpeg" name="type" /> <?php // $type ?>
                     <input type="hidden" value="<?=$src?>" name="src" />
-                    <input type="submit" value="Save" style="width:100px; height:30px;"   />
+                    <input type="submit" value="Save" class="settings_btn" style="padding: 10px 20px;font-size: 18px;"/>
                 </form>
             </div>
 
-            <div id="CropImageForm2" style="width:100px; height:30px; float:left; margin:10px 0px 0px 40px;" >
+            <div id="CropImageForm2" style="margin:10px 0px 0px 40px;" >
                 <form action="upload.php" method="post" onsubmit="return cancelCrop();">
-                    <input type="submit" value="Cancel Crop" style="width:100px; height:30px;"   />
+                    <input type="submit" value="Cancel Crop" class="settings_btn" style="background-color: red;"  />
                 </form>
             </div>
 

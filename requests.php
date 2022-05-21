@@ -4,7 +4,7 @@ include("header.php");
 
 ?>
 
-<div class="main_column column" id="main_column">
+<div class="title settings column" id="main_column">
     <h4>Friend Requests</h4>
 
     <?php

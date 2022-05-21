@@ -3,7 +3,6 @@ include ("header.php");
 
 
 
-
 if(isset($_GET['profile_username'])){
     $username = $_GET['profile_username'];
     $user_details_query = mysqli_query($con, "SELECT * FROM users WHERE username='$username'");
@@ -12,18 +11,20 @@ if(isset($_GET['profile_username'])){
     $num_friends = (substr_count($user_array['friend_array'], ',')) - 1;
 }
 
-
+$user = new User($con, $userLoggedIn);
 if (isset($_POST['remove_friend'])){
-    $user = new User($con, $userLoggedIn);
+
     $user->removeFriend($username);
 }
 if (isset($_POST['add_friend'])){
-    $user = new User($con, $userLoggedIn);
     $user->sendRequest($username);
 }
 if (isset($_POST['respond_request'])){
-    $user = new User($con, $userLoggedIn);
     header("Location: requests.php");
+}
+
+if (isset($_POST['rm_request'])){
+    $user->rmFriendRequest($username);
 }
 
 $message_obj = new Message($con, $userLoggedIn);
@@ -35,14 +36,26 @@ if (isset($_POST['post_message'])){
         $message_obj->sendMessage($username, $body, $date);
     }
 
-    $link = "#myTab button[data-bs-target='#message']";
-    echo '<script>
-            
-        </script>';
+//    $link = "#profileTab button[data-bs-target='#message']";
+//    echo "
+//        <script>
+//            const firstTabEl = document.querySelector('#myTab li:last-child button');
+//            const firstTab = new bootstrap.Tab(firstTabEl);
+//
+//            firstTab.show();
+//        </script>
+//    ";
 }
 
 ?>
 
+
+<style>
+    .wrapper{
+        margin-left: 0;
+        padding-left: 0;
+    }
+</style>
 
 <!--        profile left side info-->
         <div class="profile_left">
@@ -77,7 +90,7 @@ if (isset($_POST['post_message'])){
                         ";
                     }else if ($logged_in_user_obj->didSendRequest($username)){
                         echo "
-                            <input type='submit' name='request' class='default' value='Request Sent'><br>
+                            <input type='submit' name='rm_request' class='default' value='Request Sent'><br>
                         ";
                     }else{
                         echo "
@@ -109,26 +122,22 @@ if (isset($_POST['post_message'])){
 <!--        main column comment and others-->
         <div class="main_column column">
 
-            <!-- Nav tabs -->
-            <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Home</button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="message-tab" data-bs-toggle="tab" data-bs-target="#message" type="button" role="tab" aria-controls="message" aria-selected="false">Messages</button>
+                    <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button" role="tab" aria-controls="messages" aria-selected="false">Messages</button>
                 </li>
             </ul>
 
-
-
-
-
             <div class="tab-content">
-                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
                     <div class="posts_area"></div>
                     <img src="assets/images/icons/loading.gif" alt="" id="loading">
                 </div>
-                <div class="tab-pane fade" id="message" role="tabpanel" aria-labelledby="contact-tab">
+                <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab" tabindex="0">
+
                     <?php
 
 
@@ -154,8 +163,16 @@ if (isset($_POST['post_message'])){
                         });
 
                     </script>
+
                 </div>
             </div>
+
+            <script>
+                const firstTabEl = document.querySelector('#myTab li:last-child button')
+                const firstTab = new bootstrap.Tab(firstTabEl)
+
+                firstTab.show()
+            </script>
 
 
         </div>
@@ -258,234 +275,3 @@ if (isset($_POST['post_message'])){
 </body>
 </html>
 
-<style>
-    .wrapper{
-        margin-left: 0;
-        padding-left: 0;
-    }
-
-    .title{
-        text-align: center;
-    }
-    .profile_left{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        height: 100%;
-    }
-    .profile_left img{
-        min-width: 80px;
-        width: 55%;
-        margin: 0;
-        border: 5px solid #83D6fe;
-        border-radius: 100px;
-    }
-
-    /* popup style*/
-    .popup_model_post{
-        display: none;
-        font-family: "Bellota-BI", sans-serif;
-        padding: 10px;
-        width: 500px;
-        position: fixed;
-        top: 20%;
-        right: 35%;
-        box-shadow: 0 5px 20px gray;
-        border-radius: 20px;
-    }
-
-    .header{
-        position: relative;
-        display: flex;
-        text-align: center;
-        justify-content: center;
-    }
-    .header button{
-        height: 10px;
-        padding: 0;
-        font-family: "Bellota-BI", sans-serif;
-        background-color: transparent;
-        color: red;
-        font-size: 30px;
-        border: none;
-        margin: 0 10px;
-        position: absolute;
-        right: 0;
-    }
-    .header button:hover{
-        box-shadow: 0 5px 10px gray;
-    }
-    .mydata{
-        margin: 0 5px;
-        display: flex;
-    }
-    .mydata img{
-        width: 50px;
-        border-radius: 50%;
-        transition: width .5s, box-shadow .5s;
-    }
-    .mydata img:hover{
-        box-shadow: 0 0 20px gray;
-        width: 100px;
-    }
-    .details{
-        display: flex;
-        flex-direction: column;
-    }
-    .details input[type='submit']{
-        border: none;
-        font-size: 12px;
-    }
-
-    .popup_model_post form{
-        display: flex;
-        flex-direction: column;
-        margin: 5px;
-    }
-    .post_details_field{
-        resize: none;
-        outline-color: #3498db;
-        border-radius: 5px;
-        padding: 5px;
-        margin: 10px 0;
-        height: 100px;
-        border: none;
-        box-shadow: 0 0 5px gray;
-        transition: height .5s;
-    }
-    .post_details_field:focus{
-        height: 200px;
-    }
-    form input[type='submit']{
-        border-radius: 10px;
-        border: none;
-        color: white;
-        font-size: 20px;
-        padding: 5px;
-        transition: box-shadow .5s, font-size .5s;
-    }
-    form input[type='submit']:hover{
-        box-shadow: 0 0 20px gray;
-        font-size: 30px;
-    }
-    /* end of popup style */
-
-    /* add friend button style*/
-    .danger{
-        background-color: #e74c3c;
-    }
-    .delete_button{
-        border: none;
-        color: #e74c3c;
-        font-family: "Bellota-BI", sans-serif;
-        font-weight: bold;
-        background-color: transparent;
-        border-radius: 50px;
-        box-shadow: 0 0 5px gray;
-        transition: box-shadow .5s;
-    }
-    .delete_button:hover{
-        box-shadow: 0 5px 20px gray;
-    }
-    .status_post{
-        display: flex;
-        justify-content: space-between;
-        align-items:  center;
-    }
-
-    .warning{
-        background-color: #f0ad4e;
-    }
-
-    .default{
-        background-color: #bdc3c7;
-    }
-
-    .success{
-        background-color: #2ecc71;
-    }
-
-    .info{
-        background-color: #3498db;
-    }
-
-    .deep_blue{
-        background-color: #0043f0;
-    }
-
-    .profile_left input[type="submit"]{
-        font-family: "Bellota-BI", sans-serif;
-        width: 90%;
-        border-radius: 10px;
-        padding: 5px;
-        margin: 7px 3px 3px 7px;
-        border: none;
-        color: white;
-        transition: padding .5s, box-shadow .5s, font-size .5s;
-    }
-
-    .profile_left input[type="submit"]:hover{
-        padding: 10px;
-        box-shadow: 0 5px 50px black;
-        font-size: 20px;
-    }
-
-
-    /* message style*/
-    #message_textarea{
-        font-family: 'Bellota-LI', sans-serif;
-        resize: none;
-        padding: 5px;
-        width: 70%;
-        outline-color: #3498db;
-        border: 1px solid gray;
-        box-shadow: 0 5px 5px gray;
-        border-radius: 10px;
-        transition: height .5s, box-shadow .5s;
-    }
-    #message_textarea:focus{
-        box-shadow: 0 5px 20px #3498db;
-        height: 100px;
-    }
-    #message_submit{
-        font-size: 30px;
-        font-family: "Bellota-BI", sans-serif;
-        width: 20%;
-        border-radius: 20px;
-        border: none;
-        color: #fff;
-        background-color: #3498db;
-        box-shadow: 0 5px 10px gray;
-        transition: box-shadow .5s;
-    }
-    #message_submit:hover{
-        box-shadow: 10px 5px 30px gray;
-    }
-    .message{
-        font-size: 20px;
-        border-radius: 20px;
-        padding: 5px 10px;
-        display: inline-block;
-        color: white;
-        font-family: 'Bellota-LI', sans-serif;
-    }
-    #green{
-        box-shadow: 1px 5px 5px #2ecc71;
-        background-color: #2ecc71;
-    }
-    #blue{
-        box-shadow: 1px 5px 5px #3498db;
-        background-color: #3498db;
-        float: right;
-    }
-    .loaded_messages{
-        margin-bottom: 10px;
-        padding: 10px;
-        height: 80%;
-        min-height: 300px;
-        max-height: 600px;
-        overflow: scroll;
-    }
-    /******* message style*/
-    /**/
-</style>

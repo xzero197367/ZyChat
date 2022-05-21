@@ -23,11 +23,12 @@ require 'includes/form_handlers/login_handler.php';
         echo '
         <script>
             $(document).ready(function (){
+               alert("You had successfully registrations. You can login in now!");
                $("#first").hide();
                $("#second").show();
-//                $("#second").slideUp("slow", function (){
-//                    $("#first").slideDown("slow");
-//                });
+                $("#second").slideUp("slow", function (){
+                    $("#first").slideDown("slow");
+                });
             });
         </script>
         ';

@@ -27,7 +27,6 @@ class User{
     public function getFirstAndLastName()
     {
         // fetch data from database
-        //echo $username['first_name']." ".$username['last_name'];
         return $this->user['first_name']." ".$this->user['last_name'];
     }
 
@@ -120,12 +119,19 @@ class User{
     }
 
 
+    // remover friend request
+    public function rmFriendRequest($user_to){
+        $user_from = $this->user['username'];
+        mysqli_query($this->con, "DELETE FROM friend_requests WHERE user_to='$user_to' AND user_from='$user_from'");
+    }
+
     /*
      * send add friend request
      */
     public function sendRequest($user_to){
         $user_from = $this->user['username'];
         $date = date("Y-m-d H:i:s");
+//        $check_exist = mysqli_query($this->con, "SELECT * FROM friend_requests WHERE user_to='$user_to' AND  user_from='$user_from'")
         $query = mysqli_query($this->con, "INSERT INTO friend_requests VALUES('', '$user_to', '$user_from', '$date')");
     }
 
@@ -151,6 +157,12 @@ class User{
         }
 
         return $mutualFriends;
+    }
+
+    public function getNumberOfFriendsRequests(){
+        $username = $this->user['username'];
+        $query = mysqli_query($this->con, "SELECT * FROM friend_requests WHERE user_to='$username'");
+        return mysqli_num_rows($query);
     }
 }
 

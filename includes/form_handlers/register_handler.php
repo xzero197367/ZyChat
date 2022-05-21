@@ -101,10 +101,15 @@ if(isset($_POST['register_button'])){
         $i = 0;
 
         // if username exists add number to username
-        while (mysqli_num_rows($check_username_query)){
-            $i++;
-            $usernameNew = $username."_".$i;
-            $check_username_query = mysqli_query($con, "SELECT username FROM users WHERE username='$usernameNew'");
+        $usernameNew = '';
+        if (mysqli_num_rows($check_username_query) != 0) {
+            while (mysqli_num_rows($check_username_query) != 0) {
+                $i++;
+                $usernameNew = $username . "_" . $i;
+                $check_username_query = mysqli_query($con, "SELECT username FROM users WHERE username='$usernameNew'");
+            }
+        }else{
+            $usernameNew = $username;
         }
 
         // choose profile picture for the account
